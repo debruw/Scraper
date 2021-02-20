@@ -11,6 +11,10 @@ public class Scraper : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.isGameOver || !GameManager.Instance.isGameStarted)
+        {
+            return;
+        }
 #if UNITY_EDITOR
 
         if (Input.GetMouseButton(0))

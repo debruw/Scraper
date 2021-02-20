@@ -7,6 +7,10 @@ public class Box : MonoBehaviour
     public List<GameObject> CollectedDriplets;
     public Driplet.MyColor myBoxColor;
     public Transform newParent;
+    public int TargetCount;
+    public bool isBoxFull;
+    int wrongDripletsCount;
+    public int maxWrongDripletCount;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -16,10 +20,23 @@ public class Box : MonoBehaviour
             {
                 CollectedDriplets.Add(other.gameObject);
                 other.gameObject.transform.parent = newParent;
+                if (CollectedDriplets.Count >= TargetCount)
+                {
+                    isBoxFull = true;
+                    //Close the box
+                    //Check game win
+                    GameManager.Instance.CheckGameWin();
+                }
             }
             else
             {
-
+                wrongDripletsCount++;
+                if (wrongDripletsCount >= maxWrongDripletCount)
+                {
+                    // GameOver
+                    Debug.Log("Game Lose");
+                    GameManager.Instance.isGameOver = true;
+                }
             }
         }
     }

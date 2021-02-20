@@ -6,9 +6,14 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    private static GameManager _instance;
+
+    public static GameManager Instance { get { return _instance; } }
+
     public int currentLevel = 1;
     int MaxLevelNumber = 15;
-    public bool isGameStarted;
+    public bool isGameStarted, isGameOver;
+    public Box[] LevelBoxes;
 
     #region UI Elements
     public GameObject WinPanel, LosePanel, InGamePanel;
@@ -17,8 +22,20 @@ public class GameManager : MonoBehaviour
     public Text LevelText;
     #endregion
 
+
+    public bool isAllBoxesFull;
+
     private void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+
         //if (!PlayerPrefs.HasKey("VIBRATION"))
         //{
         //    PlayerPrefs.SetInt("VIBRATION", 1);
@@ -36,8 +53,26 @@ public class GameManager : MonoBehaviour
         //    }
         //}
         currentLevel = PlayerPrefs.GetInt("LevelId");
-
         LevelText.text = "Level " + currentLevel;
+    }
+
+    public void CheckGameWin()
+    {
+        isAllBoxesFull = true;
+        foreach (Box item in LevelBoxes)
+        {
+            if (!item.isBoxFull)
+            {
+                isAllBoxesFull = false;
+            }
+        }
+
+        if (isAllBoxesFull)
+        {
+            //Game win
+            isGameOver = true;
+            Debug.Log("Game win");
+        }
     }
 
     public IEnumerator WaitAndGameWin()
@@ -95,6 +130,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
+    public void TapToStartButtonClick()
+    {
+        isGameStarted = true;
+    }
+
     public void VibrateButtonClick()
     {
         if (PlayerPrefs.GetInt("VIBRATION").Equals(1))
@@ -110,10 +150,5 @@ public class GameManager : MonoBehaviour
 
         //if (PlayerPrefs.GetInt("VIBRATION") == 1)
         //    TapticManager.Impact(ImpactFeedback.Light);
-    }
-
-    public void TapToStartButtonClick()
-    {
-        isGameStarted = true;
-    }
+    }    
 }
