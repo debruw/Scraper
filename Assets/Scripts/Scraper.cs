@@ -8,6 +8,7 @@ public class Scraper : MonoBehaviour
     Vector2 firstPressPos;
     private Vector3 translation;
     public float Xspeed = 25f, limit;
+    public Camera cam;
 
     private void Update()
     {
@@ -42,8 +43,27 @@ public class Scraper : MonoBehaviour
         }
 
 #endif
+        timer += Time.deltaTime;
+        if (timer >= .25f)
+        {
+            zooming = false;
+            timer = .25f;
+        }
+        if (!zooming)
+        {
+            if (cam.fieldOfView > 68)
+            {
+                cam.fieldOfView -= 15 * Time.deltaTime;
+            }
+            else if (cam.fieldOfView <= 68)
+            {
+                cam.fieldOfView = 68;
+            }
+        }
     }
 
+    float timer;
+    bool zooming;
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Driplet"))
@@ -51,6 +71,16 @@ public class Scraper : MonoBehaviour
             collision.gameObject.transform.parent = null;
             collision.gameObject.GetComponent<Rigidbody>().useGravity = true;
             collision.gameObject.GetComponent<Animator>().SetTrigger("ScaleDown");
+            zooming = true;
+            if (cam.fieldOfView < 75)
+            {
+                cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 75, Time.deltaTime);
+            }
+            else if (cam.fieldOfView >= 75)
+            {
+                cam.fieldOfView = 75;
+            }
+            timer = 0;
         }
     }
 

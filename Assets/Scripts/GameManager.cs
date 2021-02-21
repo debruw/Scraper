@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (isAllBoxesFull)
+        if (isAllBoxesFull && !isGameOver)
         {
             //Game win
             isGameOver = true;
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
 
         //if (PlayerPrefs.GetInt("VIBRATION") == 1)
         //    TapticManager.Impact(ImpactFeedback.Light);
-
+        
         currentLevel++;
         PlayerPrefs.SetInt("LevelId", currentLevel);
         WinPanel.SetActive(true);
