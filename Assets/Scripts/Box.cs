@@ -11,6 +11,7 @@ public class Box : MonoBehaviour
     public bool isBoxFull;
     int wrongDripletsCount;
     public int maxWrongDripletCount;
+    public Animator myAnimator;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -24,6 +25,7 @@ public class Box : MonoBehaviour
                 {
                     isBoxFull = true;
                     //Close the box
+                    myAnimator.SetTrigger("CloseBox");
                     //Check game win
                     GameManager.Instance.CheckGameWin();
                 }
@@ -35,6 +37,7 @@ public class Box : MonoBehaviour
                 {
                     // GameOver
                     Debug.Log("Game Lose");
+                    StartCoroutine(GameManager.Instance.WaitAndGameLose());
                     GameManager.Instance.isGameOver = true;
                 }
             }

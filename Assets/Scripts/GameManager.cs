@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         {
             //Game win
             isGameOver = true;
-            Debug.Log("Game win");
+            StartCoroutine(WaitAndGameWin());
         }
     }
 
@@ -88,7 +88,7 @@ public class GameManager : MonoBehaviour
         currentLevel++;
         PlayerPrefs.SetInt("LevelId", currentLevel);
         WinPanel.SetActive(true);
-        InGamePanel.SetActive(false);
+        //InGamePanel.SetActive(false);
     }
 
     public IEnumerator WaitAndGameLose()
@@ -101,28 +101,29 @@ public class GameManager : MonoBehaviour
         //    TapticManager.Impact(ImpactFeedback.Light);
 
         LosePanel.SetActive(true);
-        InGamePanel.SetActive(false);
+        //InGamePanel.SetActive(false);
     }
 
     public void TapToNextButtonClick()
     {
-        if (currentLevel > MaxLevelNumber)
-        {
-            int rand = Random.Range(1, MaxLevelNumber);
-            if (rand == PlayerPrefs.GetInt("LastRandomLevel"))
-            {
-                rand = Random.Range(1, MaxLevelNumber);
-            }
-            else
-            {
-                PlayerPrefs.SetInt("LastRandomLevel", rand);
-            }
-            SceneManager.LoadScene("Level" + rand);
-        }
-        else
-        {
-            SceneManager.LoadScene("Level" + currentLevel);
-        }
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //if (currentLevel > MaxLevelNumber)
+        //{
+        //    int rand = Random.Range(1, MaxLevelNumber);
+        //    if (rand == PlayerPrefs.GetInt("LastRandomLevel"))
+        //    {
+        //        rand = Random.Range(1, MaxLevelNumber);
+        //    }
+        //    else
+        //    {
+        //        PlayerPrefs.SetInt("LastRandomLevel", rand);
+        //    }
+        //    SceneManager.LoadScene("Level" + rand);
+        //}
+        //else
+        //{
+        //    SceneManager.LoadScene("Level" + currentLevel);
+        //}
     }
 
     public void TapToTryAgainButtonClick()

@@ -18,7 +18,7 @@ public class Roller : MonoBehaviour
         }
         transform.Rotate(new Vector3(-TurnSpeed * Time.deltaTime, 0, 0), Space.World);
         currentRadial += TurnSpeed * Time.deltaTime;
-        if (currentRadial >= 270 && currentSpawn < Spawns.Length)
+        if (currentRadial >= 180 && currentSpawn < Spawns.Length)
         {
             currentRadial = 0;            
             Spawns[currentSpawn].transform.parent = transform;
