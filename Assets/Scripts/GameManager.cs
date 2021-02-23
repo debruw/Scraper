@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get { return _instance; } }
 
     public int currentLevel = 1;
-    int MaxLevelNumber = 15;
-    public bool isGameStarted, isGameOver;
+    int MaxLevelNumber = 10;
+    public bool isGameStarted, isGameOver, isCrushed;
     public Box[] LevelBoxes;
 
     #region UI Elements
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
 
         //if (PlayerPrefs.GetInt("VIBRATION") == 1)
         //    TapticManager.Impact(ImpactFeedback.Light);
-        
+
         currentLevel++;
         PlayerPrefs.SetInt("LevelId", currentLevel);
         WinPanel.SetActive(true);
@@ -106,24 +106,23 @@ public class GameManager : MonoBehaviour
 
     public void TapToNextButtonClick()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //if (currentLevel > MaxLevelNumber)
-        //{
-        //    int rand = Random.Range(1, MaxLevelNumber);
-        //    if (rand == PlayerPrefs.GetInt("LastRandomLevel"))
-        //    {
-        //        rand = Random.Range(1, MaxLevelNumber);
-        //    }
-        //    else
-        //    {
-        //        PlayerPrefs.SetInt("LastRandomLevel", rand);
-        //    }
-        //    SceneManager.LoadScene("Level" + rand);
-        //}
-        //else
-        //{
-        //    SceneManager.LoadScene("Level" + currentLevel);
-        //}
+        if (currentLevel > MaxLevelNumber)
+        {
+            int rand = Random.Range(1, MaxLevelNumber);
+            if (rand == PlayerPrefs.GetInt("LastRandomLevel"))
+            {
+                rand = Random.Range(1, MaxLevelNumber);
+            }
+            else
+            {
+                PlayerPrefs.SetInt("LastRandomLevel", rand);
+            }
+            SceneManager.LoadScene("Level" + rand);
+        }
+        else
+        {
+            SceneManager.LoadScene("Level" + currentLevel);
+        }
     }
 
     public void TapToTryAgainButtonClick()
@@ -151,5 +150,5 @@ public class GameManager : MonoBehaviour
 
         //if (PlayerPrefs.GetInt("VIBRATION") == 1)
         //    TapticManager.Impact(ImpactFeedback.Light);
-    }    
+    }
 }

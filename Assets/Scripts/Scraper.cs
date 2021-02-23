@@ -9,15 +9,27 @@ public class Scraper : MonoBehaviour
     private Vector3 translation;
     public float Xspeed = 25f, limit;
     public Camera cam;
+    public Roller roller;
+    public Transform raycastStart;
+    public GameObject Spark1, Spark2;
 
     private void Update()
     {
         if (GameManager.Instance.isGameOver || !GameManager.Instance.isGameStarted)
         {
+            if (Spark1.activeSelf)
+            {
+                Spark1.SetActive(false);
+                Spark2.SetActive(false);
+            }
             return;
         }
 #if UNITY_EDITOR
-
+        if (!Spark1.activeSelf)
+        {
+            Spark1.SetActive(true);
+            Spark2.SetActive(true);
+        }
         if (Input.GetMouseButton(0))
         {
             translation = new Vector3(Input.GetAxis("Mouse X"), 0, 0) * Time.deltaTime * Xspeed;
@@ -62,6 +74,33 @@ public class Scraper : MonoBehaviour
         }
     }
 
+    float raycastTimer;
+    RaycastHit hit;
+    private void FixedUpdate()
+    {
+        if (GameManager.Instance.isGameOver || !GameManager.Instance.isGameStarted)
+        {
+            return;
+        }
+        raycastTimer += Time.fixedDeltaTime;
+
+        if (GameManager.Instance.isCrushed && raycastTimer > .5f)
+        {
+            raycastTimer = 0;
+            
+            // Does the ray intersect any objects excluding the player layer
+            if (Physics.Raycast(raycastStart.position, Vector3.up, out hit, 5))
+            {
+                //Debug.Log("Did Hit");
+            }
+            else
+            {
+                GameManager.Instance.isCrushed = false;
+                roller.RollerContinue();
+            }
+        }
+    }
+
     float timer;
     bool zooming;
     private void OnCollisionEnter(Collision collision)
@@ -81,7 +120,7 @@ public class Scraper : MonoBehaviour
                 cam.fieldOfView = 75;
             }
             timer = 0;
-        }
+        }        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -91,6 +130,17 @@ public class Scraper : MonoBehaviour
             other.transform.parent = null;
             other.GetComponent<Collider>().isTrigger = false;
             other.GetComponent<Rigidbody>().useGravity = true;
+        }
+        else if (other.CompareTag("Obstacle"))
+        {
+            roller.RollerCrash();
+            other.GetComponent<Obstacle>().ReleaseChilds();
+        }
+        else if (other.CompareTag("FinishLine"))
+        {
+            roller.RollerCrash();
+            GameManager.Instance.isGameOver = true;
+            StartCoroutine(GameManager.Instance.WaitAndGameLose());
         }
     }
 }

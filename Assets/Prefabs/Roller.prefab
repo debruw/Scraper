@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b01ccc9dfaaa30e46bf508e95ce71f2d, type: 2}
+  - {fileID: 2100000, guid: 3abf2669df4af4644ac09a88f23413c5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -153,7 +153,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b01ccc9dfaaa30e46bf508e95ce71f2d, type: 2}
+  - {fileID: 2100000, guid: 3abf2669df4af4644ac09a88f23413c5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -235,6 +235,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TurnSpeed: 40
+  currentRadial: 0
+  Spawns: []
 --- !u!1 &456536395703192538
 GameObject:
   m_ObjectHideFlags: 0

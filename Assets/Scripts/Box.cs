@@ -12,6 +12,12 @@ public class Box : MonoBehaviour
     int wrongDripletsCount;
     public int maxWrongDripletCount;
     public Animator myAnimator;
+    public ParticleSystem particle;
+
+    private void Start()
+    {
+        defaultColor = GetComponent<MeshRenderer>().materials[1].color;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -21,11 +27,12 @@ public class Box : MonoBehaviour
             {
                 CollectedDriplets.Add(other.gameObject);
                 other.gameObject.transform.parent = newParent;
-                if (CollectedDriplets.Count >= TargetCount)
+                if (CollectedDriplets.Count >= TargetCount && !isBoxFull)
                 {
                     isBoxFull = true;
                     //Close the box
                     myAnimator.SetTrigger("CloseBox");
+                    particle.Play();
                     //Check game win
                     GameManager.Instance.CheckGameWin();
                 }
@@ -33,6 +40,7 @@ public class Box : MonoBehaviour
             else
             {
                 wrongDripletsCount++;
+                StartCoroutine(BlinkColor());
                 if (wrongDripletsCount >= maxWrongDripletCount)
                 {
                     // GameOver
@@ -42,6 +50,14 @@ public class Box : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Color defaultColor;
+    IEnumerator BlinkColor()
+    {        
+        GetComponent<MeshRenderer>().materials[1].color = Color.red;
+        yield return new WaitForSeconds(.1f);
+        GetComponent<MeshRenderer>().materials[1].color = defaultColor;
     }
 
     private void OnTriggerExit(Collider other)
