@@ -39,6 +39,7 @@ public class Box : MonoBehaviour
             }
             else
             {
+                SoundManager.Instance.playSound(SoundManager.GameSounds.WrongDriplet);
                 wrongDripletsCount++;
                 StartCoroutine(BlinkColor());
                 if (wrongDripletsCount >= maxWrongDripletCount)
@@ -54,7 +55,7 @@ public class Box : MonoBehaviour
 
     public Color defaultColor;
     IEnumerator BlinkColor()
-    {        
+    {
         GetComponent<MeshRenderer>().materials[1].color = Color.red;
         yield return new WaitForSeconds(.1f);
         GetComponent<MeshRenderer>().materials[1].color = defaultColor;

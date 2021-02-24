@@ -79,10 +79,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Xspeed: 15
-  limit: 0.9
+  limit: 1
   cam: {fileID: 0}
   roller: {fileID: 0}
   raycastStart: {fileID: 0}
+  Spark1: {fileID: 0}
+  Spark2: {fileID: 0}
 --- !u!65 &5956261379209965495
 BoxCollider:
   m_ObjectHideFlags: 0

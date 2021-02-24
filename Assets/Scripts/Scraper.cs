@@ -24,14 +24,22 @@ public class Scraper : MonoBehaviour
             }
             return;
         }
-#if UNITY_EDITOR
         if (!Spark1.activeSelf)
         {
             Spark1.SetActive(true);
             Spark2.SetActive(true);
         }
+#if UNITY_EDITOR
         if (Input.GetMouseButton(0))
         {
+            if (GameManager.Instance.currentLevel == 1)
+            {
+                if (GameManager.Instance.TutorialCanvas1.activeSelf)
+                {
+                    GameManager.Instance.TutorialCanvas1.SetActive(false);
+                    StartCoroutine(GameManager.Instance.WaitAndCloseTuto2());
+                }
+            }
             translation = new Vector3(Input.GetAxis("Mouse X"), 0, 0) * Time.deltaTime * Xspeed;
 
             transform.Translate(translation, Space.World);
@@ -42,10 +50,18 @@ public class Scraper : MonoBehaviour
 
         if (Input.touchCount > 0)
         {
+            if (GameManager.Instance.currentLevel == 1)
+            {
+                if (GameManager.Instance.TutorialCanvas1.activeSelf)
+	            {
+		            GameManager.Instance.TutorialCanvas1.SetActive(false);
+                    StartCoroutine(GameManager.Instance.WaitAndCloseTuto2()); 
+	            }
+            }
             touch = Input.GetTouch(0);
             if (touch.phase == TouchPhase.Moved)
             {
-                transform.localPosition = new Vector3(Mathf.Clamp(transform.localPosition.x + touch.deltaPosition.x * 0.01f, -1.5f, 1.5f), transform.localPosition.y, transform.localPosition.z);
+                transform.localPosition = new Vector3(Mathf.Clamp(transform.localPosition.x + touch.deltaPosition.x * 0.01f, -limit, limit), transform.localPosition.y, transform.localPosition.z);
             }
             else if (touch.phase == TouchPhase.Began)
             {
@@ -87,7 +103,7 @@ public class Scraper : MonoBehaviour
         if (GameManager.Instance.isCrushed && raycastTimer > .5f)
         {
             raycastTimer = 0;
-            
+
             // Does the ray intersect any objects excluding the player layer
             if (Physics.Raycast(raycastStart.position, Vector3.up, out hit, 5))
             {
@@ -120,24 +136,27 @@ public class Scraper : MonoBehaviour
                 cam.fieldOfView = 75;
             }
             timer = 0;
-        }        
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Driplet"))
         {
+            SoundManager.Instance.playSound(SoundManager.GameSounds.Collect);
             other.transform.parent = null;
             other.GetComponent<Collider>().isTrigger = false;
             other.GetComponent<Rigidbody>().useGravity = true;
         }
         else if (other.CompareTag("Obstacle"))
         {
+            SoundManager.Instance.playSound(SoundManager.GameSounds.Hit);
             roller.RollerCrash();
             other.GetComponent<Obstacle>().ReleaseChilds();
         }
         else if (other.CompareTag("FinishLine"))
         {
+            SoundManager.Instance.playSound(SoundManager.GameSounds.Hit);
             roller.RollerCrash();
             GameManager.Instance.isGameOver = true;
             StartCoroutine(GameManager.Instance.WaitAndGameLose());

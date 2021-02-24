@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TapticPlugin;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     public Button VibrationButton, TapToStartButton;
     public Sprite on, off;
     public Text LevelText;
+    public GameObject TutorialCanvas1, TutorialCanvas2;
     #endregion
 
 
@@ -36,22 +38,22 @@ public class GameManager : MonoBehaviour
             _instance = this;
         }
 
-        //if (!PlayerPrefs.HasKey("VIBRATION"))
-        //{
-        //    PlayerPrefs.SetInt("VIBRATION", 1);
-        //    VibrationButton.GetComponent<Image>().sprite = on;
-        //}
-        //else
-        //{
-        //    if (PlayerPrefs.GetInt("VIBRATION") == 1)
-        //    {
-        //        VibrationButton.GetComponent<Image>().sprite = on;
-        //    }
-        //    else
-        //    {
-        //        VibrationButton.GetComponent<Image>().sprite = off;
-        //    }
-        //}
+        if (!PlayerPrefs.HasKey("VIBRATION"))
+        {
+            PlayerPrefs.SetInt("VIBRATION", 1);
+            VibrationButton.GetComponent<Image>().sprite = on;
+        }
+        else
+        {
+            if (PlayerPrefs.GetInt("VIBRATION") == 1)
+            {
+                VibrationButton.GetComponent<Image>().sprite = on;
+            }
+            else
+            {
+                VibrationButton.GetComponent<Image>().sprite = off;
+            }
+        }
         currentLevel = PlayerPrefs.GetInt("LevelId");
         LevelText.text = "Level " + currentLevel;
     }
@@ -77,13 +79,13 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator WaitAndGameWin()
     {
-        //SoundManager.Instance.StopAllSounds();
-        //SoundManager.Instance.playSound(SoundManager.GameSounds.Win);
+        SoundManager.Instance.StopAllSounds();
+        SoundManager.Instance.playSound(SoundManager.GameSounds.Win);
 
         yield return new WaitForSeconds(1f);
 
-        //if (PlayerPrefs.GetInt("VIBRATION") == 1)
-        //    TapticManager.Impact(ImpactFeedback.Light);
+        if (PlayerPrefs.GetInt("VIBRATION") == 1)
+            TapticManager.Impact(ImpactFeedback.Light);
 
         currentLevel++;
         PlayerPrefs.SetInt("LevelId", currentLevel);
@@ -93,12 +95,12 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator WaitAndGameLose()
     {
-        //SoundManager.Instance.playSound(SoundManager.GameSounds.Lose);
+        SoundManager.Instance.playSound(SoundManager.GameSounds.Lose);
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
 
-        //if (PlayerPrefs.GetInt("VIBRATION") == 1)
-        //    TapticManager.Impact(ImpactFeedback.Light);
+        if (PlayerPrefs.GetInt("VIBRATION") == 1)
+            TapticManager.Impact(ImpactFeedback.Light);
 
         LosePanel.SetActive(true);
         //InGamePanel.SetActive(false);
@@ -133,6 +135,17 @@ public class GameManager : MonoBehaviour
     public void TapToStartButtonClick()
     {
         isGameStarted = true;
+        if (currentLevel == 1)
+        {
+            TutorialCanvas1.SetActive(true);
+        }
+    }
+
+    public IEnumerator WaitAndCloseTuto2()
+    {
+        TutorialCanvas2.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        TutorialCanvas2.SetActive(false);
     }
 
     public void VibrateButtonClick()
@@ -148,7 +161,7 @@ public class GameManager : MonoBehaviour
             VibrationButton.GetComponent<Image>().sprite = on;
         }
 
-        //if (PlayerPrefs.GetInt("VIBRATION") == 1)
-        //    TapticManager.Impact(ImpactFeedback.Light);
+        if (PlayerPrefs.GetInt("VIBRATION") == 1)
+            TapticManager.Impact(ImpactFeedback.Light);
     }
 }
